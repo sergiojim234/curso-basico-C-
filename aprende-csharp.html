@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende C# jugando</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f3fb;--ink:#1d1633;--mut:#6b6485;--card:#fff;--line:#d9d3ee;--ac:#7c3aed;--ok:#059669;--bad:#dc2626;--code:#1d1633;--codeink:#e9e4ff;
+--grid:rgba(124,58,237,.07)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#14101f;--ink:#efeaff;--mut:#a59dc4;--card:#1e1830;--line:#35294f;--ac:#a78bfa;--ok:#34d399;--bad:#f87171;--code:#0d0a17;--grid:rgba(167,139,250,.07)}}
+body{margin:0;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--ink);background:var(--bg);
+background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;line-height:1.5}
+main{max-width:860px;margin:0 auto;padding:24px 16px 60px}
+h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800;margin:.2em 0;letter-spacing:-.03em}
+h1 span{font-family:'JetBrains Mono',monospace;color:var(--ac)}
+.sub{color:var(--mut);max-width:56ch;margin:0 0 24px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+nav button{font:inherit;font-weight:700;padding:10px 18px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--ac);border-color:var(--ac);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+section{display:none;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:22px}
+section.on{display:block}
+h2{margin:0 0 6px;font-size:1.5rem}
+p{margin:.4em 0 1em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:14px}
+label{display:flex;flex-direction:column;font-size:.85rem;font-weight:700;color:var(--mut);gap:4px}
+input,select{font:inherit;padding:9px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);min-width:0}
+.btn{font:inherit;font-weight:700;padding:10px 18px;border:0;border-radius:10px;background:var(--ac);color:#fff;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+pre{font-family:'JetBrains Mono',monospace;font-size:.9rem;background:var(--code);color:var(--codeink);border-radius:12px;padding:14px;overflow-x:auto;margin:0 0 14px}
+pre .ln{display:block;padding:1px 6px;border-radius:5px}
+pre .hl{background:rgba(167,139,250,.35)}
+.k{color:#c4b5fd}.t{color:#5eead4}.s{color:#fda4af}.n{color:#fcd34d}
+.mem{display:flex;gap:12px;flex-wrap:wrap;min-height:90px;padding:12px;border:2px dashed var(--line);border-radius:12px;margin-bottom:12px}
+.box{border:2px solid var(--ac);border-radius:12px;padding:8px 14px;min-width:96px;text-align:center;animation:pop .3s}
+.box small{display:block;font-family:'JetBrains Mono',monospace;color:var(--ac);font-size:.75rem}
+.box b{display:block;font-size:1.2rem;word-break:break-all}
+.box em{font-style:normal;font-size:.8rem;color:var(--mut)}
+@keyframes pop{from{transform:scale(.6);opacity:0}}
+.msg{min-height:1.4em;font-weight:700}.msg.bad{color:var(--bad)}.msg.ok{color:var(--ok)}
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.cond{grid-column:1/-1;text-align:center;border:2px solid var(--ac);border-radius:12px;padding:10px;font-family:'JetBrains Mono',monospace;font-weight:700}
+.path{border:2px solid var(--line);border-radius:12px;padding:12px;text-align:center;opacity:.4;transition:.3s}
+.path.win{opacity:1;border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent);transform:scale(1.03)}
+input[type=range]{width:100%;padding:0;accent-color:var(--ac)}
+.con{font-family:'JetBrains Mono',monospace;background:#000;color:#4ade80;border-radius:12px;padding:12px;min-height:60px;font-size:.9rem;white-space:pre-wrap}
+.con:before{content:"Consola> ";color:#888}
+.tiles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tile{width:44px;height:44px;border-radius:10px;border:2px solid var(--line);display:grid;place-items:center;font-weight:800;font-family:'JetBrains Mono',monospace;transition:.2s}
+.tile.on{background:var(--ac);color:#fff;border-color:var(--ac);transform:translateY(-6px)}
+.tip{font-size:.9rem;color:var(--mut);border-left:4px solid var(--ac);padding-left:12px;margin-top:14px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Aprende <span>C#</span> jugando</h1>
+<p class="sub">Toca, cambia valores y mira qué pasa. Cada concepto muestra el código y lo que ocurre dentro del programa.</p>
+
+<nav role="tablist">
+<button role="tab" aria-selected="true" data-t="v">Variables</button>
+<button role="tab" aria-selected="false" data-t="c">Condicionales</button>
+<button role="tab" aria-selected="false" data-t="b">Bucles</button>
+</nav>
+
+<!-- VARIABLES -->
+<section id="v" class="on">
+<h2>Variables: cajas con nombre</h2>
+<p>Una variable guarda un dato en memoria. Tiene un <b>tipo</b>, un <b>nombre</b> y un <b>valor</b>.</p>
+<div class="row">
+<label>Tipo<select id="vt"><option>int</option><option>double</option><option>string</option><option>bool</option></select></label>
+<label>Nombre<input id="vn" value="edad" size="10"></label>
+<label>Valor<input id="vv" value="15" size="10"></label>
+<button class="btn" id="vadd">Crear variable</button>
+<button class="btn ghost" id="vclr">Vaciar</button>
+</div>
+<div class="msg" id="vm"></div>
+<pre id="vcode"></pre>
+<div class="mem" id="vmem" aria-live="polite"></div>
+<div class="con" id="vcon"></div>
+<p class="tip"><code>int</code> = enteros, <code>double</code> = decimales, <code>string</code> = texto entre comillas, <code>bool</code> = true o false. Prueba escribir "hola" en un int y verás el error.</p>
+</section>
+
+<!-- CONDICIONALES -->
+<section id="c">
+<h2>if / else: tomar decisiones</h2>
+<p>El programa evalúa una condición y sigue solo uno de los dos caminos.</p>
+<label>Edad: <b id="cv">15</b><input type="range" id="cr" min="0" max="40" value="15"></label>
+<pre id="ccode"></pre>
+<div class="flow">
+<div class="cond" id="cc"></div>
+<div class="path" id="pt">Verdadero<br>“Eres mayor de edad”</div>
+<div class="path" id="pf">Falso<br>“Eres menor de edad”</div>
+</div>
+<div class="con" id="ccon"></div>
+<p class="tip">Mueve el control alrededor de 18. Fíjate que <code>&gt;=</code> incluye el 18, pero <code>&gt;</code> no.</p>
+</section>
+
+<!-- BUCLES -->
+<section id="b">
+<h2>for: repetir sin copiar y pegar</h2>
+<p>Un bucle repite un bloque. Aquí se ejecuta una vez por cada casilla.</p>
+<label>Repeticiones: <b id="bv">5</b><input type="range" id="br" min="1" max="12" value="5"></label>
+<pre id="bcode"></pre>
+<div class="tiles" id="btiles"></div>
+<div class="row"><button class="btn" id="brun">Ejecutar paso a paso</button></div>
+<div class="con" id="bcon"></div>
+<p class="tip">Se ejecuta 3 partes: <code>int i = 0</code> (inicio), <code>i &lt; N</code> (¿sigo?) e <code>i++</code> (sumar 1 al final de cada vuelta).</p>
+</section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.t));
+});
+
+/* VARIABLES */
+let vars=[];
+function vRender(){
+  $('vmem').innerHTML=vars.length?vars.map(v=>`<div class="box"><small>${v.t}</small><em>${esc(v.n)}</em><b>${esc(v.raw)}</b></div>`).join(''):'<span style="color:var(--mut)">La memoria está vacía. Crea una variable.</span>';
+  $('vcon').textContent=vars.map(v=>`${v.n} = ${v.raw}`).join('\n');
+}
+function vCode(){
+  const t=$('vt').value,n=$('vn').value||'x';let v=$('vv').value;
+  if(t==='string')v='"'+v+'"';
+  $('vcode').innerHTML=`<span class="t">${t}</span> ${esc(n)} = <span class="${t==='string'?'s':'n'}">${esc(v)}</span>;`;
+}
+$('vadd').onclick=()=>{
+  const t=$('vt').value,n=$('vn').value.trim(),v=$('vv').value.trim(),m=$('vm');
+  m.className='msg bad';
+  if(!/^[A-Za-z_]\w*$/.test(n))return m.textContent='Error: el nombre debe empezar con letra y no tener espacios.';
+  if(vars.some(x=>x.n===n))return m.textContent=`Error CS0128: ya existe una variable llamada '${n}'.`;
+  if(t==='int'&&!/^-?\d+$/.test(v))return m.textContent=`Error CS0029: "${v}" no cabe en un int. Usa un número entero.`;
+  if(t==='double'&&!/^-?\d+(\.\d+)?$/.test(v))return m.textContent=`Error CS0029: "${v}" no es un double. Usa un número como 3.14.`;
+  if(t==='bool'&&!/^(true|false)$/.test(v))return m.textContent='Error CS0029: un bool solo acepta true o false.';
+  vars.push({t,n,raw:v});m.className='msg ok';m.textContent='¡Compilado! La variable está en memoria.';vRender();
+};
+$('vclr').onclick=()=>{vars=[];$('vm').textContent='';vRender()};
+['vt','vn','vv'].forEach(i=>$(i).oninput=vCode);vCode();vRender();
+
+/* CONDICIONALES */
+function cUpd(){
+  const e=+$('cr').value;$('cv').textContent=e;
+  $('ccode').innerHTML=`<span class="t">int</span> edad = <span class="n">${e}</span>;\n<span class="ln ${e>=18?'':'hl'}" style="display:none"></span>`+
+  `<span class="ln ${e>=18?'hl':''}"><span class="k">if</span> (edad &gt;= <span class="n">18</span>) {</span>`+
+  `<span class="ln ${e>=18?'hl':''}">  Console.WriteLine(<span class="s">"Eres mayor de edad"</span>);</span>`+
+  `<span class="ln">} <span class="k">else</span> {</span>`+
+  `<span class="ln ${e<18?'hl':''}">  Console.WriteLine(<span class="s">"Eres menor de edad"</span>);</span>`+
+  `<span class="ln">}</span>`;
+  $('cc').textContent=`${e} >= 18  →  ${e>=18}`;
+  $('pt').classList.toggle('win',e>=18);$('pf').classList.toggle('win',e<18);
+  $('ccon').textContent=e>=18?'Eres mayor de edad':'Eres menor de edad';
+}
+$('cr').oninput=cUpd;cUpd();
+
+/* BUCLES */
+let running=false;
+function bBuild(){
+  const n=+$('br').value;$('bv').textContent=n;
+  $('bcode').innerHTML=`<span class="ln" id="l1"><span class="k">for</span> (<span class="t">int</span> i = <span class="n">0</span>; i &lt; <span class="n">${n}</span>; i++) {</span>`+
+  `<span class="ln" id="l2">  Console.WriteLine(<span class="s">"Vuelta "</span> + i);</span><span class="ln">}</span>`;
+  $('btiles').innerHTML=Array.from({length:n},(_,i)=>`<div class="tile" id="t${i}">${i}</div>`).join('');
+  $('bcon').textContent='';
+}
+$('br').oninput=()=>{if(!running)bBuild()};
+$('brun').onclick=async()=>{
+  if(running)return;running=true;bBuild();
+  const n=+$('br').value,sl=ms=>new Promise(r=>setTimeout(r,ms));
+  for(let i=0;i<n;i++){
+    $('l1').classList.add('hl');await sl(250);$('l1').classList.remove('hl');
+    $('l2').classList.add('hl');$('t'+i).classList.add('on');
+    $('bcon').textContent+=`Vuelta ${i}\n`;await sl(400);$('l2').classList.remove('hl');
+  }
+  $('bcon').textContent+=`(i llegó a ${n}, la condición i < ${n} es falsa: el bucle termina)`;
+  running=false;
+};
+bBuild();
+</script>
+</body>
+</html>
